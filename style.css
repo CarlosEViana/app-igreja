@@ -1,0 +1,161 @@
+/*
+  Este arquivo contém os estilos visuais da página, como cores,
+  fontes, animações e o design dos componentes.
+*/
+
+:root {
+    --bg-main: #0A192F;
+    --card-bg: #1E2D4B;
+    --highlight-main: #C0A062;
+    --text-main: #F0F8FF;
+    --text-secondary: rgba(240, 248, 255, 0.7);
+    --action-whatsapp: #25D366;
+    --action-main: #3b82f6;
+    --action-main-hover: #2563eb;
+}
+
+body { background-color: var(--bg-main); color: var(--text-main); }
+.text-highlight-main { color: var(--highlight-main); }
+.text-text-secondary { color: var(--text-secondary); }
+
+.fade-in { animation: fadeIn 0.5s ease-in-out; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.tab-pane, .admin-tab-pane { display: none; }
+.tab-pane.active-pane, .admin-tab-pane.active-pane { display: block; }
+
+.nav-tab, .admin-nav-tab {
+    padding: 0.5rem 1.25rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    border-radius: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    transition: all 0.2s ease-in-out;
+    border: 1px solid transparent;
+}
+.nav-tab:hover, .admin-nav-tab:hover {
+    color: var(--text-main);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(192, 160, 98, 0.4);
+}
+.nav-tab.active-tab, .admin-nav-tab.active-tab {
+    background-color: var(--highlight-main);
+    color: var(--bg-main);
+    font-weight: 600;
+    border-color: var(--highlight-main);
+}
+
+.content-card {
+    background-color: var(--card-bg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+}
+
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+    gap: 1rem;
+}
+.pagination-button {
+    padding: 0.5rem 1.25rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    border-radius: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    transition: all 0.2s ease-in-out;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.pagination-button:hover:not(:disabled) {
+    color: var(--text-main);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--highlight-main);
+}
+.pagination-button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+.page-info {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.form-input, .form-select {
+    width: 100%;
+    background-color: rgba(10, 25, 47, 0.7);
+    border: 1px solid rgba(192, 160, 98, 0.3);
+    border-radius: 9999px;
+    padding: 0.75rem 1.25rem;
+    color: var(--text-main);
+    transition: all 0.2s;
+    height: 48px;
+}
+.form-input::placeholder { color: var(--text-secondary); }
+.form-input:focus, .form-select:focus {
+    outline: none;
+    border-color: var(--highlight-main);
+    background-color: var(--bg-main);
+}
+textarea.form-input { border-radius: 0.75rem; height: auto; }
+input[type="date"] { color-scheme: dark; }
+.form-select {
+    appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23C0A062' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+}
+
+.action-button {
+    background-color: var(--action-main);
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    border-radius: 9999px;
+    transition: all 0.2s ease-in-out;
+}
+.action-button:hover { background-color: var(--action-main-hover); }
+
+.share-button {
+    background-color: rgba(37, 211, 102, 0.1);
+    color: var(--action-whatsapp);
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-weight: 500;
+    font-size: 0.875rem;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.2s ease-in-out;
+    border: 1px solid rgba(37, 211, 102, 0.5);
+}
+.share-button:hover {
+    background-color: var(--action-whatsapp);
+    color: white;
+}
+
+.mobile-menu-hidden {
+    position: fixed; top: 0; right: -100%;
+    width: 80%; max-width: 300px; height: 100%;
+    background-color: rgba(10, 25, 47, 0.8);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 100;
+}
+.mobile-menu-visible { right: 0; }
+.mobile-menu-link { color: var(--text-secondary); }
+.mobile-menu-link:hover { color: var(--text-main); }
+
+.notification-hidden {
+    position: fixed; bottom: 1.25rem; right: 1.25rem;
+    background-color: #22c55e; color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    transform: translateY(200%);
+    transition: transform 0.5s ease-in-out;
+}
+.notification-hidden.show { transform: translateY(0); }
+

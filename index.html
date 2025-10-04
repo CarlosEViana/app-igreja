@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<!-- Define o idioma da página para português do Brasil -->
+<html lang="pt-BR">
+<head>
+    <!-- Configurações essenciais do documento -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App da Igreja v9</title>
+
+    <!-- Links para as ferramentas externas -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Link para nossa folha de estilos personalizada -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<!-- O corpo da página agora usa as variáveis de cor definidas no CSS -->
+<body class="text-main">
+
+    <!-- Container principal que alinha todo o conteúdo no centro -->
+    <div id="app" class="max-w-4xl mx-auto p-4 md:p-6">
+        
+        <!-- Cabeçalho da página -->
+        <header class="flex justify-between items-center mb-6 pb-4 border-b border-white/10">
+            <!-- Título e subtítulo -->
+            <div>
+                <h1 class="text-3xl font-bold text-main">Igreja da Comunidade</h1>
+                <p class="text-highlight-main">Conectando vidas, transformando corações.</p>
+            </div>
+            <!-- Botões do cabeçalho -->
+            <div class="flex items-center space-x-2">
+                 <button id="login-admin-btn" class="px-4 py-2 text-sm font-medium text-main bg-white/10 rounded-full hover:bg-white/20">
+                    <i data-lucide="shield-check" class="inline-block w-4 h-4 mr-1"></i>
+                    Painel Admin
+                </button>
+                 <button id="logout-btn" class="hidden px-4 py-2 text-sm font-medium text-white bg-red-500/50 rounded-full hover:bg-red-500/70">
+                    <i data-lucide="log-out" class="inline-block w-4 h-4 mr-1"></i>
+                    Sair
+                </button>
+                 <button id="hamburger-btn" class="md:hidden p-2 text-main">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Conteúdo principal do aplicativo -->
+        <main>
+            <!-- VISÃO DO MEMBRO (o que todos veem ao entrar) -->
+            <div id="member-view" class="fade-in">
+                <!-- Navegação por abas -->
+                <nav class="hidden md:flex justify-center gap-x-2 mb-6">
+                    <button class="nav-tab active-tab" data-tab="devocionais">Devocionais</button>
+                    <button class="nav-tab" data-tab="eventos">Eventos</button>
+                    <button class="nav-tab" data-tab="videos">Vídeos</button>
+                </nav>
+
+                <!-- Área onde o conteúdo de cada aba vai aparecer -->
+                <div id="tab-content">
+                    <div id="devocionais-content" class="tab-pane active-pane">
+                        <div class="space-y-4" id="devocionais-list"></div>
+                        <!-- Controles de paginação para Devocionais -->
+                        <div id="devocionais-pagination" class="pagination-controls"></div>
+                    </div>
+                    <div id="eventos-content" class="tab-pane">
+                        <div class="space-y-4" id="eventos-list"></div>
+                        <!-- Controles de paginação para Eventos -->
+                        <div id="eventos-pagination" class="pagination-controls"></div>
+                    </div>
+                    <div id="videos-content" class="tab-pane">
+                        <div class="space-y-4" id="videos-list"></div>
+                         <!-- Controles de paginação para Vídeos -->
+                        <div id="videos-pagination" class="pagination-controls"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAINEL ADMINISTRATIVO (começa escondido) -->
+            <div id="admin-view" class="hidden fade-in">
+                <h2 class="text-2xl font-semibold mb-6 text-main">Painel Administrativo</h2>
+                
+                <nav class="flex justify-center gap-x-2 mb-6">
+                    <button class="admin-nav-tab active-tab" data-tab="admin-devocionais">Gerenciar Devocionais</button>
+                    <button class="admin-nav-tab" data-tab="admin-eventos">Gerenciar Eventos</button>
+                    <button class="admin-nav-tab" data-tab="admin-videos">Gerenciar Vídeos</button>
+                </nav>
+
+                <div id="admin-devocionais-content" class="admin-tab-pane active-pane">
+                    <div class="content-card p-6">
+                        <h3 class="text-xl font-bold mb-4 text-main">Adicionar/Editar Devocional</h3>
+                        <form id="devocional-form" class="space-y-4">
+                             <input type="hidden" id="devocional-id">
+                             <input type="text" id="devocional-titulo" placeholder="Título do Devocional" class="form-input" required>
+                             <textarea id="devocional-texto" rows="4" placeholder="Texto do devocional..." class="form-input" required></textarea>
+                             <div class="flex justify-end">
+                                <button type="submit" class="action-button">Salvar Devocional</button>
+                             </div>
+                        </form>
+                        <div id="admin-devocionais-list" class="mt-6 border-t border-white/10 pt-4"></div>
+                    </div>
+                </div>
+
+                <div id="admin-eventos-content" class="admin-tab-pane">
+                    <div class="content-card p-6">
+                        <h3 class="text-xl font-bold mb-4 text-main">Adicionar/Editar Evento</h3>
+                        <form id="evento-form" class="space-y-4">
+                            <input type="hidden" id="evento-id">
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="evento-dia" class="block text-sm font-medium text-text-secondary mb-1">Data do Evento</label>
+                                    <input type="date" id="evento-dia" class="form-input" required>
+                                </div>
+                                <div>
+                                    <label for="evento-horario" class="block text-sm font-medium text-text-secondary mb-1">Horário</label>
+                                    <select id="evento-horario" class="form-select" required></select>
+                                </div>
+                            </div>
+                            <input type="text" id="evento-tema" placeholder="Tema do Evento" class="form-input" required>
+                            <textarea id="evento-avisos" rows="2" placeholder="Avisos Adicionais" class="form-input"></textarea>
+                            <div class="flex justify-end">
+                               <button type="submit" class="action-button">Salvar Evento</button>
+                            </div>
+                        </form>
+                        <div id="admin-eventos-list" class="mt-6 border-t border-white/10 pt-4"></div>
+                    </div>
+                </div>
+
+                <div id="admin-videos-content" class="admin-tab-pane">
+                     <div class="content-card p-6">
+                        <h3 class="text-xl font-bold mb-4 text-main">Adicionar/Editar Vídeo</h3>
+                        <form id="video-form" class="space-y-4">
+                             <input type="hidden" id="video-id">
+                             <input type="text" id="video-titulo" placeholder="Título do Vídeo" class="form-input" required>
+                             <textarea id="video-descricao" rows="2" placeholder="Breve descrição do vídeo..." class="form-input"></textarea>
+                             <div>
+                                <label for="video-arquivo" class="block text-sm font-medium text-text-secondary">Arquivo de Vídeo</label>
+                                <input type="file" id="video-arquivo" accept="video/*" class="form-input mt-1 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200" required>
+                                <video id="video-preview" class="hidden mt-4 w-full rounded-lg" controls></video>
+                             </div>
+                             <div class="flex justify-end">
+                                <button type="submit" class="action-button">Salvar Vídeo</button>
+                             </div>
+                        </form>
+                        <div id="admin-videos-list" class="mt-6 border-t border-white/10 pt-4"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="login-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 z-50" style="display: none;">
+        <div class="content-card p-8 w-full max-w-sm">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-main">Acesso Administrativo</h3>
+                <button id="close-modal-btn" class="text-text-secondary hover:text-main text-3xl">&times;</button>
+            </div>
+            <form id="login-form">
+                <label for="password" class="block text-sm font-medium text-text-secondary">Senha</label>
+                <input type="password" id="password" class="form-input mt-1" required>
+                <p id="login-error" class="text-red-400 text-sm mt-2 h-5"></p>
+                <button type="submit" class="w-full mt-4 action-button">Entrar</button>
+            </form>
+        </div>
+    </div>
+    
+    <div id="mobile-menu" class="mobile-menu-hidden">
+        <div class="flex justify-end p-4">
+             <button id="close-menu-btn" class="p-2 text-main">
+                <i data-lucide="x" class="w-8 h-8"></i>
+            </button>
+        </div>
+        <nav class="flex flex-col items-center space-y-6 mt-10">
+            <a href="#" class="mobile-menu-link text-2xl" data-tab="devocionais">Devocionais</a>
+            <a href="#" class="mobile-menu-link text-2xl" data-tab="eventos">Eventos</a>
+            <a href="#" class="mobile-menu-link text-2xl" data-tab="videos">Vídeos</a>
+        </nav>
+    </div>
+
+    <div id="notification" class="notification-hidden">
+        <span>Nova postagem adicionada!</span>
+    </div>
+
+    <script src="script.js" defer></script>
+</body>
+</html>
+
