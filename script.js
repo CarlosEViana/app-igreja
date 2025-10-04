@@ -39,6 +39,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const whatsappIconSVG = `<svg viewBox="0 0 24 24" class="w-4 h-4 mr-2" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.886-.001 2.269.655 4.398 1.908 6.182l-.341 1.246 1.274-.328zM11.894 8.354c-.224 0-.442.028-.648.083-.206.055-.455.137-.662.254-.207.117-.393.214-.51.275-.117.062-.214.093-.262.094-.048.001-.117-.01-.165-.01-.048 0-.117.046-.224.164-.107.117-.282.312-.42.529-.138.217-.286.49-.393.733-.107.243-.205.528-.205.814 0 .285.048.546.146.78.098.234.286.505.51.748.224.243.48.493.748.718.268.224.566.43.864.592.298.162.617.279.915.34.298.062.636.094.915.094s.546-.047.748-.146c.202-.099.43-.247.648-.48.218-.233.393-.505.51-.814s.138-.648.083-.99c-.055-.341-.186-.63-.393-.864-.207-.234-.48-.42-.814-.528-.334-.108-.748-.094-1.129-.094z"/></svg>`;
 
     // =============================================
+    // LÓGICA DE NOTIFICAÇÕES DO NAVEGADOR
+    // =============================================
+    const notificationBtn = document.getElementById('notification-bell-btn');
+    function updateNotificationButton() {
+        if (!('Notification' in window)) { notificationBtn.style.display = 'none'; return; }
+        if (Notification.permission === 'granted') { notificationBtn.innerHTML = `<i data-lucide="bell-ring" class="w-5 h-5"></i>`; notificationBtn.title = 'Notificações ativadas'; notificationBtn.classList.add('text-green-400'); notificationBtn.disabled = true; } 
+        else if (Notification.permission === 'denied') { notificationBtn.innerHTML = `<i data-lucide="bell-off" class="w-5 h-5"></i>`; notificationBtn.title = 'Notificações bloqueadas'; notificationBtn.classList.add('text-red-400'); notificationBtn.disabled = true; }
+        lucide.createIcons();
+    }
+    notificationBtn.addEventListener('click', () => { if (Notification.permission === 'default') { Notification.requestPermission().then(updateNotificationButton); } });
+    function showNotification(title, body) { if (Notification.permission === 'granted') { new Notification(title, { body: body, icon: 'https://img.icons8.com/plasticine/100/church.png' }); } }
+
+    // =============================================
     // FUNÇÕES DE UTILIDADE, PAGINAÇÃO E RENDERIZAÇÃO
     // =============================================
     function formatDateToBR(dateString) { if (!dateString) return ''; const [y, m, d] = dateString.split('-'); return `${d}/${m}/${y}`; }
@@ -102,12 +115,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function setupAdminTabs() { document.querySelectorAll('.admin-nav-tab').forEach(tab => { tab.addEventListener('click', () => { document.querySelectorAll('.admin-nav-tab').forEach(t => t.classList.remove('active-tab')); tab.classList.add('active-tab'); document.querySelectorAll('.admin-tab-pane').forEach(pane => pane.classList.toggle('active-pane', pane.id === `${tab.dataset.tab}-content`)); }); }); }
     const devocionalForm = document.getElementById('devocional-form');
     function renderAdminDevocionais() { const l = document.getElementById('admin-devocionais-list'); l.innerHTML = ''; devocionais.forEach(i => { l.innerHTML += `<div class="flex justify-between items-center p-3 rounded-md hover:bg-white/5 text-main"><p class="font-semibold">${i.titulo}</p><div class="space-x-2"><button onclick="editDevocional(${i.id})" class="p-2 text-blue-400 hover:text-blue-300"><i data-lucide="edit"></i></button><button onclick="deleteDevocional(${i.id})" class="p-2 text-red-400 hover:text-red-300"><i data-lucide="trash-2"></i></button></div></div>`; }); lucide.createIcons(); }
-    devocionalForm.addEventListener('submit', e => { e.preventDefault(); const id = document.getElementById('devocional-id').value; const data = { titulo: document.getElementById('devocional-titulo').value, texto: document.getElementById('devocional-texto').value }; if(id) { const index = devocionais.findIndex(i => i.id == id); devocionais[index] = { ...devocionais[index], ...data }; } else { devocionais.unshift({ ...data, id: Date.now(), data: new Date().toISOString() }); showNotification('Novo devocional publicado!'); } devocionalForm.reset(); document.getElementById('devocional-id').value = ''; initializeApp(); });
+    devocionalForm.addEventListener('submit', e => { e.preventDefault(); const id = document.getElementById('devocional-id').value; const data = { titulo: document.getElementById('devocional-titulo').value, texto: document.getElementById('devocional-texto').value }; if(id) { const index = devocionais.findIndex(i => i.id == id); devocionais[index] = { ...devocionais[index], ...data }; } else { devocionais.unshift({ ...data, id: Date.now(), data: new Date().toISOString() }); showNotification('Novo Devocional!', 'Um novo devocional foi publicado.'); } devocionalForm.reset(); document.getElementById('devocional-id').value = ''; initializeApp(); });
     window.editDevocional = (id) => { const i = devocionais.find(d => d.id == id); document.getElementById('devocional-id').value = i.id; document.getElementById('devocional-titulo').value = i.titulo; document.getElementById('devocional-texto').value = i.texto; }
     window.deleteDevocional = (id) => { if(confirm('Excluir este devocional?')) { devocionais = devocionais.filter(i => i.id != id); initializeApp(); } }
     const eventoForm = document.getElementById('evento-form');
     function renderAdminEventos() { const l = document.getElementById('admin-eventos-list'); l.innerHTML = ''; eventos.forEach(e => { l.innerHTML += `<div class="flex justify-between items-center p-3 rounded-md hover:bg-white/5 text-main"><p class="font-semibold">${e.tema}</p><div class="space-x-2"><button onclick="editEvento(${e.id})" class="p-2 text-blue-400 hover:text-blue-300"><i data-lucide="edit"></i></button><button onclick="deleteEvento(${e.id})" class="p-2 text-red-400 hover:text-red-300"><i data-lucide="trash-2"></i></button></div></div>`; }); lucide.createIcons(); }
-    eventoForm.addEventListener('submit', (e) => { e.preventDefault(); const id = document.getElementById('evento-id').value; const data = { dia: document.getElementById('evento-dia').value, horario: document.getElementById('evento-horario').value, tema: document.getElementById('evento-tema').value, avisos: document.getElementById('evento-avisos').value }; if (id) { const index = eventos.findIndex(i => i.id == id); eventos[index] = { ...eventos[index], ...data }; } else { eventos.unshift({ ...data, id: Date.now(), data: new Date().toISOString() }); showNotification('Novo evento publicado!'); } eventoForm.reset(); document.getElementById('evento-id').value = ''; initializeApp(); });
+    eventoForm.addEventListener('submit', (e) => { e.preventDefault(); const id = document.getElementById('evento-id').value; const data = { dia: document.getElementById('evento-dia').value, horario: document.getElementById('evento-horario').value, tema: document.getElementById('evento-tema').value, avisos: document.getElementById('evento-avisos').value }; if (id) { const index = eventos.findIndex(i => i.id == id); eventos[index] = { ...eventos[index], ...data }; } else { eventos.unshift({ ...data, id: Date.now(), data: new Date().toISOString() }); showNotification('Novo Evento Agendado!', data.tema); } eventoForm.reset(); document.getElementById('evento-id').value = ''; initializeApp(); });
     window.editEvento = (id) => { const i = eventos.find(e => e.id == id); document.getElementById('evento-id').value = i.id; document.getElementById('evento-dia').value = i.dia; document.getElementById('evento-horario').value = i.horario; document.getElementById('evento-tema').value = i.tema; document.getElementById('evento-avisos').value = i.avisos; }
     window.deleteEvento = (id) => { if (confirm('Excluir este evento?')) { eventos = eventos.filter(i => i.id != id); initializeApp(); } }
     const videoForm = document.getElementById('video-form');
@@ -115,25 +128,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const videoPreview = document.getElementById('video-preview');
     videoArquivoInput.addEventListener('change', () => { const f = videoArquivoInput.files[0]; if (f) { videoPreview.src = URL.createObjectURL(f); videoPreview.classList.remove('hidden'); } });
     function renderAdminVideos() { const l = document.getElementById('admin-videos-list'); l.innerHTML = ''; videos.forEach(i => { l.innerHTML += `<div class="flex justify-between items-center p-3 rounded-md hover:bg-white/5 text-main"><p class="font-semibold">${i.titulo}</p><div class="space-x-2"><button onclick="deleteVideo(${i.id})" class="p-2 text-red-400 hover:text-red-300"><i data-lucide="trash-2"></i></button></div></div>`; }); lucide.createIcons(); }
-    videoForm.addEventListener('submit', e => { e.preventDefault(); const f = videoArquivoInput.files[0]; const u = f ? URL.createObjectURL(f) : null; const d = { titulo: document.getElementById('video-titulo').value, descricao: document.getElementById('video-descricao').value, arquivo: f ? f.name : 'Nenhum', url: u }; videos.unshift({ ...d, id: Date.now(), data: new Date().toISOString() }); showNotification('Novo vídeo publicado!'); videoForm.reset(); videoPreview.classList.add('hidden'); initializeApp(); });
+    videoForm.addEventListener('submit', e => { e.preventDefault(); const f = videoArquivoInput.files[0]; const u = f ? URL.createObjectURL(f) : null; const d = { titulo: document.getElementById('video-titulo').value, descricao: document.getElementById('video-descricao').value, arquivo: f ? f.name : 'Nenhum', url: u }; videos.unshift({ ...d, id: Date.now(), data: new Date().toISOString() }); showNotification('Novo Vídeo Publicado!', d.titulo); videoForm.reset(); videoPreview.classList.add('hidden'); initializeApp(); });
     window.deleteVideo = (id) => { if(confirm('Excluir este vídeo?')) { videos = videos.filter(i => i.id != id); initializeApp(); } }
 
     // =============================================
     // INICIALIZAÇÃO
     // =============================================
-    function showNotification(message) {
-        const notification = document.getElementById('notification');
-        notification.querySelector('span').textContent = message;
-        notification.classList.add('show');
-        setTimeout(() => { notification.classList.remove('show'); }, 3000);
-    }
-
     function initializeApp() {
         renderContent('devocionais', devocionais, renderDevocionais);
         renderContent('eventos', eventos, renderEventos);
         renderContent('videos', videos, renderVideos);
         populateTimeSelect();
         setupAdminTabs();
+        updateNotificationButton();
         renderAdminDevocionais();
         renderAdminEventos();
         renderAdminVideos();

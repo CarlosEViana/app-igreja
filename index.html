@@ -5,7 +5,7 @@
     <!-- Configurações essenciais do documento -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App da Igreja v9</title>
+    <title>App v10</title>
 
     <!-- Links para as ferramentas externas -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -29,6 +29,10 @@
             </div>
             <!-- Botões do cabeçalho -->
             <div class="flex items-center space-x-2">
+                 <!-- Botão para ativar notificações -->
+                 <button id="notification-bell-btn" class="p-2 text-highlight-main rounded-full hover:bg-white/10" title="Ativar notificações">
+                    <i data-lucide="bell" class="w-5 h-5"></i>
+                </button>
                  <button id="login-admin-btn" class="px-4 py-2 text-sm font-medium text-main bg-white/10 rounded-full hover:bg-white/20">
                     <i data-lucide="shield-check" class="inline-block w-4 h-4 mr-1"></i>
                     Painel Admin
@@ -58,17 +62,14 @@
                 <div id="tab-content">
                     <div id="devocionais-content" class="tab-pane active-pane">
                         <div class="space-y-4" id="devocionais-list"></div>
-                        <!-- Controles de paginação para Devocionais -->
                         <div id="devocionais-pagination" class="pagination-controls"></div>
                     </div>
                     <div id="eventos-content" class="tab-pane">
                         <div class="space-y-4" id="eventos-list"></div>
-                        <!-- Controles de paginação para Eventos -->
                         <div id="eventos-pagination" class="pagination-controls"></div>
                     </div>
                     <div id="videos-content" class="tab-pane">
                         <div class="space-y-4" id="videos-list"></div>
-                         <!-- Controles de paginação para Vídeos -->
                         <div id="videos-pagination" class="pagination-controls"></div>
                     </div>
                 </div>
@@ -147,6 +148,7 @@
         </main>
     </div>
 
+    <!-- Janela de Login (Modal) -->
     <div id="login-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 z-50" style="display: none;">
         <div class="content-card p-8 w-full max-w-sm">
             <div class="flex justify-between items-center mb-4">
@@ -162,6 +164,7 @@
         </div>
     </div>
     
+    <!-- Menu Mobile Lateral -->
     <div id="mobile-menu" class="mobile-menu-hidden">
         <div class="flex justify-end p-4">
              <button id="close-menu-btn" class="p-2 text-main">
@@ -173,10 +176,6 @@
             <a href="#" class="mobile-menu-link text-2xl" data-tab="eventos">Eventos</a>
             <a href="#" class="mobile-menu-link text-2xl" data-tab="videos">Vídeos</a>
         </nav>
-    </div>
-
-    <div id="notification" class="notification-hidden">
-        <span>Nova postagem adicionada!</span>
     </div>
 
     <script src="script.js" defer></script>
